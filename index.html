@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>THREE</title>
+    <link rel="stylesheet" href="css/main.css" />
+  </head>
+  <body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/102/three.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.2/TweenMax.min.js"></script>
+
+    <script>
+      /********* CREATING THE SCENE AND FIELD OF VIEW* ********/
+      // three main things for every three.js proj
+      let scene = new THREE.Scene();
+
+      let camera = new THREE.PerspectiveCamera(
+        75, //field of view
+        window.innerWidth / window.innerHeight, //aspect ratio, dynamic
+        0.1, // near plane
+        1000 // far plane
+      );
+
+      camera.position.z = 5; //set camera position, how close 3d rendered thing is to us, higher numbers = further away
+
+      let renderer = new THREE.WebGLRenderer( //most flexibility
+        { antialias: true } // makes it so the lines do not look jagged
+      );
+
+      renderer.setClearColor('#e5e5e5');
+      renderer.setSize(window.innerWidth, window.innerHeight);
+
+      // create our canvas element with renderer settings so far
+      document.body.appendChild(renderer.domElement);
+      window.addEventListener('resize', () => {
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        camera.aspect = window.innerWidth / window.innerHeight;
+
+        camera.updateProjectionMatrix();
+      });
+
+      /**********  ADDING FOR INDIVIDUAL-OBJECT ANIMATION   **********/
+      let raycaster = new THREE.Raycaster();
+      let mouse = new THREE.Vector2();
+
+      /********* CREATING OUR 3D SHAPE WITH FORM AND MATERIAL *********/
+      //think about form and material
+      //sphere accepts radius, width, and height
+      //shape:
+      let geometry = new THREE.BoxGeometry(1, 1, 1);
+      //material
+      let material = new THREE.MeshLambertMaterial({ color: 0xb05af2 });
+      //combine them into a mesh
+      let mesh = new THREE.Mesh(geometry, material);
+
+      //move shape around : long hand
+      //   mesh.position.x = -2;
+      //   mesh.position.y = 2;
+      //   mesh.position.z = 2;
+
+      // move shape around : short hand
+      //   mesh.position.set(-2, 2, 2);
+
+      // rotate shape:
+      //   mesh.rotation.set(45, 0, 0);
+      // make it longer
+      //   mesh.scale.set(1, 2, 1);
+
+      scene.add(mesh);
+
+      /*********   ADD LIGHT    *********/
+      let light = new THREE.PointLight(
+        0xffffff, //color
+        1, // intensity
+        500 //distance
+      );
+
+      //position x,y,z
+      light.position.set(10, 0, 25);
+      scene.add(light);
+
+      // replace --> renderer.render(scene, camera); --> with the below in order to not have the shape i'm creating be affected/distorted by the changing window size. renderer will call and redraw every time screen is refreshed
+
+      let render = function () {
+        requestAnimationFrame(render);
+        // mesh.rotation.x += 0.01; // animation rotation
+        renderer.render(scene, camera);
+      };
+
+      function onMouseMove(event) {
+        event.preventDefault();
+
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1; // from documention
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1; // from doc
+
+        raycaster.setFromCamera(mouse, camera);
+
+        let intersects = raycaster.intersectObjects(scene.children, true); // will return array wherever mouse is in scene
+
+        for (let i = 0; i < intersects.length; i++) {
+          //change color of obj
+          intersects[i].object.material.color.set(0xff0000);
+        }
+      }
+
+      render();
+
+      /**********   ADD ANIMATION   **********/
+      // timeline, the second link i liked up top, allows you to do a one-by-one animation action (? these are my words lol)
+
+      // use this line to have animation happen immeidately on load/refresh
+      // this.tl = new TimelineMax().delay(0.3);
+
+      this.tl = new TimelineMax({ paused: true }); // wont run because its paused, we have to tell it when to run
+      this.tl.to(
+        mesh.scale, // reference mesh, scale initially
+        1, // duration of 1
+        { x: 2, ease: Expo.easeOut } // scale on x axis
+      );
+      this.tl.to(mesh.scale, 0.5, { x: 0.5, ease: Expo.easeOut });
+      this.tl.to(mesh.position, 0.5, { x: 2, ease: Expo.easeOut });
+      this.tl.to(
+        mesh.rotation,
+        0.5,
+        { y: Math.PI * 0.5, ease: Expo.easeOut },
+        '=-1.5' // happens 1.5 seconds before it normally would... idk why this is worthwhile other than it keeps my cube a cube, whereas without it my cube becomes skinny
+      );
+
+      // run animation with an event listener
+      // click anywhere on page to run animation
+      //   document.body.addEventListener('click', () => {
+      //     this.tl.play(); // play method will play the above
+      //   });
+
+      // run animation only when user clicks that specific box
+      console.log(window);
+      window.addEventListener('click', onMouseMove); //on hover
+    </script>
+  </body>
+</html>
