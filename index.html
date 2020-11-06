@@ -30,7 +30,7 @@
         { antialias: true } // makes it so the lines do not look jagged
       );
 
-      renderer.setClearColor('#e5e5e5');
+      renderer.setClearColor('#e0c2f0');
       renderer.setSize(window.innerWidth, window.innerHeight);
 
       // create our canvas element with renderer settings so far
@@ -50,29 +50,29 @@
       //think about form and material
       //sphere accepts radius, width, and height
       /*
-      //shape:
-      let geometry = new THREE.BoxGeometry(1, 1, 1);
-      //material
-      let material = new THREE.MeshLambertMaterial({ color: 0xb05af2 });
-      //combine them into a mesh
-      let mesh = new THREE.Mesh(geometry, material);
+        //shape:
+        let geometry = new THREE.BoxGeometry(1, 1, 1);
+        //material
+        let material = new THREE.MeshLambertMaterial({ color: 0xb05af2 });
+        //combine them into a mesh
+        let mesh = new THREE.Mesh(geometry, material);
 
 
-    //   move shape around : long hand
-    //     mesh.position.x = -2;
-    //     mesh.position.y = 2;
-    //     mesh.position.z = 2;
+      //   move shape around : long hand
+      //     mesh.position.x = -2;
+      //     mesh.position.y = 2;
+      //     mesh.position.z = 2;
 
-    //   move shape around : short hand
-    //     mesh.position.set(-2, 2, 2);
+      //   move shape around : short hand
+      //     mesh.position.set(-2, 2, 2);
 
-    //   rotate shape:
-    //     mesh.rotation.set(45, 0, 0);
-    //   make it longer
-    //     mesh.scale.set(1, 2, 1);
+      //   rotate shape:
+      //     mesh.rotation.set(45, 0, 0);
+      //   make it longer
+      //     mesh.scale.set(1, 2, 1);
 
-      scene.add(mesh);
-      */
+        scene.add(mesh);
+        */
 
       /********* GENERATING MULTIPLE 3D OBJECTS FOR MORE FUN *********/
       let geometry = new THREE.BoxGeometry(1, 1, 1);
@@ -83,7 +83,7 @@
         let mesh = new THREE.Mesh(geometry, material);
         mesh.position.x = (Math.random() - 0.5) * 10;
         mesh.position.y = (Math.random() - 0.5) * 10;
-        mesh.position.z = (Math.random() - 0.5) * 10;
+        mesh.position.z = (Math.random() - 0.75) * 10;
         scene.add(mesh);
         meshX += 1;
       }
@@ -96,11 +96,11 @@
       );
 
       //position x,y,z
-      light.position.set(0, 0, 0);
+      light.position.set(10, 0, 0);
       scene.add(light);
 
       let light2 = new THREE.PointLight(0xffffff, 1, 1000);
-      light2.position.set(0, 0, 25);
+      light2.position.set(-2, 0, 25);
       scene.add(light2);
 
       // replace --> renderer.render(scene, camera); --> with the below in order to not have the shape i'm creating be affected/distorted by the changing window size. renderer will call and redraw every time screen is refreshed
@@ -121,16 +121,26 @@
 
         let intersects = raycaster.intersectObjects(scene.children, true); // will return array wherever mouse is in scene
 
+        //for fun in generating where the box will move
+        function getRandomInt(min, max) {
+          min = Math.ceil(min);
+          max = Math.floor(max);
+          return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
+        }
+
         //prettier-ignore
         for (let i = 0; i < intersects.length; i++) {
-          //change color of obj
-          //   intersects[i].object.material.color.set(0xff0000);
-          this.tl = new TimelineMax();
-          this.tl.to(intersects[i].object.scale, 1, { x: 2, ease: Expo.easeOut });
-          this.tl.to(intersects[i].object.scale, 0.5, { x: 0.5, ease: Expo.easeOut });
-          this.tl.to(intersects[i].object.position, 0.5, { x: 2, ease: Expo.easeOut });
-          this.tl.to(intersects[i].object.rotation,0.5, { y: Math.PI * 0.5, ease: Expo.easeOut },'=-1.5');
-        }
+            //change color of obj
+              
+            this.tl = new TimelineMax();
+            // this.tl.to(intersects[i].object.material.color.set(0xff0000))
+            console.log(intersects[i].object)
+            // this.tl.to(intersects[i].object.geometry.colors = [0xffffff]);
+          //   this.tl.to(intersects[i].object.scale, 1, { x: 2, ease: Expo.easeOut });
+          //   this.tl.to(intersects[i].object.scale, 0.5, { x: 0.5, ease: Expo.easeOut });
+            this.tl.to(intersects[i].object.position, 1, { x: getRandomInt(-4,4),  y: getRandomInt(-4,4), ease: Expo.easeOut });
+            this.tl.to(intersects[i].object.rotation,0.5, { y: Math.PI, ease: Expo.easeOut });
+          }
       }
 
       render();
@@ -142,8 +152,7 @@
       //   });
 
       // run animation only when user clicks that specific box
-      console.log(window);
-      window.addEventListener('mousemove', onMouseMove); //on hover
+      window.addEventListener('click', onMouseMove); //on hover
     </script>
   </body>
 </html>
