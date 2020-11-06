@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap');
+
 body {
   margin: 0;
   height: 100vh;
@@ -5,4 +7,17 @@ body {
 
 canvas {
   display: block;
+}
+
+h1 {
+  position: absolute;
+  top: 1em;
+  left: 2em;
+  font-family: 'Monsterrat', sans-serif;
+  font-size: 2em;
+  text-transform: uppercase;
+  width: auto;
+  line-height: 0.8em;
+  border: 2px solid black;
+  padding: 0.2em;
 }

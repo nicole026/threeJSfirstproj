@@ -1,0 +1,22 @@
+<script>
+  /**********   ADD ANIMATION   **********/
+  // timeline, the second link i liked up top, allows you to do a one-by-one animation action (? these are my words lol)
+
+  // use this line to have animation happen immeidately on load/refresh
+  // this.tl = new TimelineMax().delay(0.3);
+
+  this.tl = new TimelineMax({ paused: true }); // wont run because its paused, we have to tell it when to run
+  this.tl.to(
+    mesh.scale, // reference mesh, scale initially
+    1, // duration of 1
+    { x: 2, ease: Expo.easeOut } // scale on x axis
+  );
+  this.tl.to(mesh.scale, 0.5, { x: 0.5, ease: Expo.easeOut });
+  this.tl.to(mesh.position, 0.5, { x: 2, ease: Expo.easeOut });
+  this.tl.to(
+    mesh.rotation,
+    0.5,
+    { y: Math.PI * 0.5, ease: Expo.easeOut },
+    '=-1.5' // happens 1.5 seconds before it normally would... idk why this is worthwhile other than it keeps my cube a cube, whereas without it my cube becomes skinny
+  );
+</script>

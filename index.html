@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="css/main.css" />
   </head>
   <body>
+    <h1>3JS Mini Project</h1>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/102/three.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.2/TweenMax.min.js"></script>
 
@@ -47,6 +49,7 @@
       /********* CREATING OUR 3D SHAPE WITH FORM AND MATERIAL *********/
       //think about form and material
       //sphere accepts radius, width, and height
+      /*
       //shape:
       let geometry = new THREE.BoxGeometry(1, 1, 1);
       //material
@@ -54,31 +57,51 @@
       //combine them into a mesh
       let mesh = new THREE.Mesh(geometry, material);
 
-      //move shape around : long hand
-      //   mesh.position.x = -2;
-      //   mesh.position.y = 2;
-      //   mesh.position.z = 2;
 
-      // move shape around : short hand
-      //   mesh.position.set(-2, 2, 2);
+    //   move shape around : long hand
+    //     mesh.position.x = -2;
+    //     mesh.position.y = 2;
+    //     mesh.position.z = 2;
 
-      // rotate shape:
-      //   mesh.rotation.set(45, 0, 0);
-      // make it longer
-      //   mesh.scale.set(1, 2, 1);
+    //   move shape around : short hand
+    //     mesh.position.set(-2, 2, 2);
+
+    //   rotate shape:
+    //     mesh.rotation.set(45, 0, 0);
+    //   make it longer
+    //     mesh.scale.set(1, 2, 1);
 
       scene.add(mesh);
+      */
+
+      /********* GENERATING MULTIPLE 3D OBJECTS FOR MORE FUN *********/
+      let geometry = new THREE.BoxGeometry(1, 1, 1);
+      let material = new THREE.MeshLambertMaterial({ color: 0xb05af2 });
+
+      let meshX = -10;
+      for (let i = 0; i < 25; i++) {
+        let mesh = new THREE.Mesh(geometry, material);
+        mesh.position.x = (Math.random() - 0.5) * 10;
+        mesh.position.y = (Math.random() - 0.5) * 10;
+        mesh.position.z = (Math.random() - 0.5) * 10;
+        scene.add(mesh);
+        meshX += 1;
+      }
 
       /*********   ADD LIGHT    *********/
       let light = new THREE.PointLight(
         0xffffff, //color
-        1, // intensity
-        500 //distance
+        2, // intensity
+        1000 //distance
       );
 
       //position x,y,z
-      light.position.set(10, 0, 25);
+      light.position.set(0, 0, 0);
       scene.add(light);
+
+      let light2 = new THREE.PointLight(0xffffff, 1, 1000);
+      light2.position.set(0, 0, 25);
+      scene.add(light2);
 
       // replace --> renderer.render(scene, camera); --> with the below in order to not have the shape i'm creating be affected/distorted by the changing window size. renderer will call and redraw every time screen is refreshed
 
@@ -98,34 +121,19 @@
 
         let intersects = raycaster.intersectObjects(scene.children, true); // will return array wherever mouse is in scene
 
+        //prettier-ignore
         for (let i = 0; i < intersects.length; i++) {
           //change color of obj
-          intersects[i].object.material.color.set(0xff0000);
+          //   intersects[i].object.material.color.set(0xff0000);
+          this.tl = new TimelineMax();
+          this.tl.to(intersects[i].object.scale, 1, { x: 2, ease: Expo.easeOut });
+          this.tl.to(intersects[i].object.scale, 0.5, { x: 0.5, ease: Expo.easeOut });
+          this.tl.to(intersects[i].object.position, 0.5, { x: 2, ease: Expo.easeOut });
+          this.tl.to(intersects[i].object.rotation,0.5, { y: Math.PI * 0.5, ease: Expo.easeOut },'=-1.5');
         }
       }
 
       render();
-
-      /**********   ADD ANIMATION   **********/
-      // timeline, the second link i liked up top, allows you to do a one-by-one animation action (? these are my words lol)
-
-      // use this line to have animation happen immeidately on load/refresh
-      // this.tl = new TimelineMax().delay(0.3);
-
-      this.tl = new TimelineMax({ paused: true }); // wont run because its paused, we have to tell it when to run
-      this.tl.to(
-        mesh.scale, // reference mesh, scale initially
-        1, // duration of 1
-        { x: 2, ease: Expo.easeOut } // scale on x axis
-      );
-      this.tl.to(mesh.scale, 0.5, { x: 0.5, ease: Expo.easeOut });
-      this.tl.to(mesh.position, 0.5, { x: 2, ease: Expo.easeOut });
-      this.tl.to(
-        mesh.rotation,
-        0.5,
-        { y: Math.PI * 0.5, ease: Expo.easeOut },
-        '=-1.5' // happens 1.5 seconds before it normally would... idk why this is worthwhile other than it keeps my cube a cube, whereas without it my cube becomes skinny
-      );
 
       // run animation with an event listener
       // click anywhere on page to run animation
@@ -135,7 +143,7 @@
 
       // run animation only when user clicks that specific box
       console.log(window);
-      window.addEventListener('click', onMouseMove); //on hover
+      window.addEventListener('mousemove', onMouseMove); //on hover
     </script>
   </body>
 </html>
