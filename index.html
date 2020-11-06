@@ -10,30 +10,41 @@
     <h1>3JS Mini Project</h1>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/102/three.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.2/TweenMax.min.js"></script>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.2/TweenMax.min.js"
+    >
+      // tween animates within the Three.js render loop
+    </script>
 
     <script>
       /********* CREATING THE SCENE AND FIELD OF VIEW* ********/
       // three main things for every three.js proj
+
+      //scene = where all objects and lights go
+      //allows you to set up what and where is to be rendered by js
       let scene = new THREE.Scene();
 
+      //camera = view
       let camera = new THREE.PerspectiveCamera(
         75, //field of view
         window.innerWidth / window.innerHeight, //aspect ratio, dynamic
-        0.1, // near plane
-        1000 // far plane
+        0.1, // near plane - in documentation
+        1000 // far plane - in documentation
       );
 
       camera.position.z = 5; //set camera position, how close 3d rendered thing is to us, higher numbers = further away
 
-      let renderer = new THREE.WebGLRenderer( //most flexibility
+      //renderer
+      let renderer = new THREE.WebGLRenderer( //most flexibility, "web graphics library"
         { antialias: true } // makes it so the lines do not look jagged
       );
 
-      renderer.setClearColor('#e0c2f0');
+      renderer.setClearColor('#e0c2f0'); // background
       renderer.setSize(window.innerWidth, window.innerHeight);
 
       // create our canvas element with renderer settings so far
+      //render it into html doc:
       document.body.appendChild(renderer.domElement);
       window.addEventListener('resize', () => {
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -75,7 +86,7 @@
         */
 
       /********* GENERATING MULTIPLE 3D OBJECTS FOR MORE FUN *********/
-      let geometry = new THREE.BoxGeometry(1, 1, 1);
+      let geometry = new THREE.DodecahedronGeometry(1, 0);
       let material = new THREE.MeshLambertMaterial({ color: 0xb05af2 });
 
       let meshX = -10;
@@ -136,6 +147,7 @@
             // this.tl.to(intersects[i].object.material.color.set(0xff0000))
             console.log(intersects[i].object)
             // this.tl.to(intersects[i].object.geometry.colors = [0xffffff]);
+            //    this.tl.to(intersects[i].object.material.color.set(0xff0000))
           //   this.tl.to(intersects[i].object.scale, 1, { x: 2, ease: Expo.easeOut });
           //   this.tl.to(intersects[i].object.scale, 0.5, { x: 0.5, ease: Expo.easeOut });
             this.tl.to(intersects[i].object.position, 1, { x: getRandomInt(-4,4),  y: getRandomInt(-4,4), ease: Expo.easeOut });
